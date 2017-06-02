@@ -8,6 +8,7 @@ license = "Unlicense"
 description = """
 Provices macros to measure the time until end of scope.
 """
+categories = ["development-tools", "development-tools::profiling"]
 
 [dependencies]
 log = "0.3"
