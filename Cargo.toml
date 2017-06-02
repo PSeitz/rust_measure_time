@@ -1,6 +1,6 @@
 [package]
 name = "measure_time"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Pascal Seitz <pascal.seitz@gmail.com>"]
 repository = "https://github.com/PSeitz/rust_measure_time"
 keywords = ["measure", "time", "elapsed", "wall", "scope"]
