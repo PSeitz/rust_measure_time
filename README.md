@@ -6,6 +6,23 @@ The macros measures the time until end of scope
 
 This is done by creating an object, which measures the time. The time is printed when the object is dropped.
 
+### Installation
+
+Simply add a corresponding entry to your `Cargo.toml` dependency list:
+
+```toml,ignore
+[dependencies]
+measure_time = "0.1"
+```
+
+And add this to your crate root:
+
+```rust,ignore
+#[macro_use]
+extern crate measure_time;
+```
+
+
 ### Examples
 
 ```rust
