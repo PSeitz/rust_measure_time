@@ -15,7 +15,7 @@ Simply add a corresponding entry to your `Cargo.toml` dependency list:
 measure_time = "0.1"
 ```
 
-And add this to your crate root:
+And add this to your crate root (lib.rs/main.rs):
 
 ```rust,ignore
 #[macro_use]
