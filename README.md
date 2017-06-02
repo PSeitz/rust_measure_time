@@ -1,5 +1,7 @@
 # Measure Time in Rust
 
+[![](http://meritbadge.herokuapp.com/fst)](https://crates.io/crates/measure_time)
+
 The macros measures the time until end of scope
 
 This is done by creating an object, which measures the time. The time is printed when the object is dropped.
