@@ -2,6 +2,12 @@
 name = "measure_time"
 version = "0.1.0"
 authors = ["Pascal Seitz <pascal.seitz@gmail.com>"]
+repository = "https://github.com/PSeitz/rust_measure_time"
+keywords = ["measure", "time", "elapsed", "wall", "scope"]
+license = "Unlicense"
+description = """
+Provices macros to measure the time until end of scope.
+"""
 
 [dependencies]
 log = "0.3"
