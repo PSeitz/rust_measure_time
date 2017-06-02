@@ -29,7 +29,7 @@
 extern crate log;
 
 #[derive(Debug)]
-pub enum MeasureTimeLogLevel {Info, Debug, Print}
+pub enum MeasureTimeLogLevel {Info, Debug, Trace, Print}
 
 #[derive(Debug)]
 pub struct MeasureTime {
@@ -47,19 +47,23 @@ impl Drop for MeasureTime {
         match self.level  {
             MeasureTimeLogLevel::Info  =>    info!("{} took {}ms ",self.name, time_in_ms),
             MeasureTimeLogLevel::Debug =>   debug!("{} took {}ms ",self.name, time_in_ms),
+            MeasureTimeLogLevel::Trace => trace!("{} took {}ms ",self.name, time_in_ms),
             MeasureTimeLogLevel::Print => println!("{} took {}ms ",self.name, time_in_ms),
         }
     }
 }
 
 
-
+/// logs the time with the info! macro
 #[macro_export]
 macro_rules! info_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Info); } }
+/// logs the time with the debug! macro
 #[macro_export]
 macro_rules! debug_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Debug); } }
+/// logs the time with the trace! macro
 #[macro_export]
-macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
+macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Trace); } }
+/// logs the time with the print! macro
 #[macro_export]
 macro_rules! print_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
 
