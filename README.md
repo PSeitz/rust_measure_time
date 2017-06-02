@@ -1,4 +1,4 @@
-# rust_measure_time
+# Measure Time in Rust
 
 The macros measures the time until end of scope
 
