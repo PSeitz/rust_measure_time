@@ -1,6 +1,6 @@
 //! This is documentation for the `measure_time` crate.
 //!
-//! The macros measures the time until end of scope
+//! The crate provides macros, which measure the time until end of scope
 //!
 //! This is done by creating an object, which measures the time. The time is printed when the object is dropped.
 //!
