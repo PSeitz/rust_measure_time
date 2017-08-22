@@ -1,6 +1,6 @@
-# Measure Time in Rust
+# measure_time
 
-[![](http://meritbadge.herokuapp.com/fst)](https://crates.io/crates/measure_time)
+[![](http://meritbadge.herokuapp.com/measure_time)](https://crates.io/crates/measure_time)
 
 The crate provides macros, which measure the time until end of scope.
 
