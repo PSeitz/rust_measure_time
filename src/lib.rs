@@ -1,6 +1,4 @@
-//! This is documentation for the `measure_time` crate.
-//!
-//! The crate provides macros, which measure the time until end of scope
+//! The crate provides macros, which measure the time in ms until end of scope
 //!
 //! This is done by creating an object, which measures the time. The time is printed when the object is dropped.
 //!
@@ -18,9 +16,10 @@
 //!             sum+=el;
 //!         }
 //!         println!("{:?}", sum);
+//!         // --> prints "measuring block took 0.010ms"
 //!     }
 //!     trace_time!(format!("{:?}", "yep"));
-//!     print_time!("yep2");
+//!     // --> prints "yep took ...", "measuring function took 0.0135ms"
 //! }
 //! ```
 //!
@@ -66,6 +65,7 @@ macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = $cr
 /// logs the time with the print! macro
 #[macro_export]
 macro_rules! print_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
+
 
 #[cfg(test)]
 mod tests {
