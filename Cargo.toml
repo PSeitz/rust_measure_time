@@ -1,6 +1,6 @@
 [package]
 name = "measure_time"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Pascal Seitz <pascal.seitz@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/PSeitz/rust_measure_time"
@@ -13,4 +13,4 @@ Provices macros to measure the time until end of scope.
 categories = ["development-tools", "development-tools::profiling"]
 
 [dependencies]
-log = "0.3"
+log = "0.4"
