@@ -12,14 +12,17 @@ Simply add a corresponding entry to your `Cargo.toml` dependency list:
 
 ```toml,ignore
 [dependencies]
-measure_time = "0.1"
+measure_time = "0.4"
+log = "0.4"
 ```
 
-And add this to your crate root (lib.rs/main.rs):
+And add this to your crate root (e.g. lib.rs/main.rs):
 
 ```rust,ignore
 #[macro_use]
 extern crate measure_time;
+#[macro_use]
+extern crate log;
 ```
 
 
@@ -28,6 +31,8 @@ extern crate measure_time;
 ```rust
 #[macro_use]
 extern crate measure_time;
+#[macro_use]
+extern crate log;
 fn main() {
     info_time!("measure function");
     {
