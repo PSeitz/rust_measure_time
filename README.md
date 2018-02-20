@@ -42,3 +42,8 @@ fn main() {
     print_time!("yep2");
 }
 ```
+
+### Changelog
+
+#### Version 0.4
+Objects to measure time are only created when the log level is enabled, else ```None``` will be created
