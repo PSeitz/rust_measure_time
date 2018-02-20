@@ -1,6 +1,6 @@
 [package]
 name = "measure_time"
-version = "0.1.6"
+version = "0.4.0"
 authors = ["Pascal Seitz <pascal.seitz@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/PSeitz/rust_measure_time"

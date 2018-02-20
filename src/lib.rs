@@ -2,9 +2,16 @@
 //!
 //! This is done by creating an object, which measures the time. The time is printed when the object is dropped.
 //!
+//! *log verson = "0.4"  is required*
+//!
+//! Currently macro re-export is not supported in rust, so the user needs to ```macro_use``` import the log module like in the example below:
+//!
+//!
 //! ### Examples
 //!
 //! ```rust
+//! #[macro_use]
+//! extern crate log;
 //! #[macro_use]
 //! extern crate measure_time;
 //! fn main() {
@@ -24,8 +31,22 @@
 //! ```
 //!
 
+
 #[macro_use]
-extern crate log;
+pub extern crate log;
+
+/// logs the time with the info! macro
+#[macro_export]
+macro_rules! info_time {($e:expr) =>  {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Info) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Info) ) } else{ None }; } }
+/// logs the time with the debug! macro
+#[macro_export]
+macro_rules! debug_time {($e:expr) => {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Debug) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Debug) ) }else{ None }; } }
+/// logs the time with the trace! macro
+#[macro_export]
+macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Trace) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Trace) ) } else{ None }; } }
+/// logs the time with the print! macro
+#[macro_export]
+macro_rules! print_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
 
 #[derive(Debug)]
 pub enum MeasureTimeLogLevel {Info, Debug, Trace, Print}
@@ -51,20 +72,6 @@ impl Drop for MeasureTime {
         }
     }
 }
-
-
-/// logs the time with the info! macro
-#[macro_export]
-macro_rules! info_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Info); } }
-/// logs the time with the debug! macro
-#[macro_export]
-macro_rules! debug_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Debug); } }
-/// logs the time with the trace! macro
-#[macro_export]
-macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Trace); } }
-/// logs the time with the print! macro
-#[macro_export]
-macro_rules! print_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
 
 
 #[cfg(test)]
