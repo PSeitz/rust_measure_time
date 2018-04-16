@@ -35,6 +35,12 @@
 #[macro_use]
 pub extern crate log;
 
+/// logs the time with the error! macro
+#[macro_export]
+macro_rules! error_time {($e:expr) => {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Error) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Error) ) } else{ None }; } }
+/// logs the time with the warn! macro
+#[macro_export]
+macro_rules! warn_time {($e:expr) =>  {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Warn) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Warn) ) } else{ None }; } }
 /// logs the time with the info! macro
 #[macro_export]
 macro_rules! info_time {($e:expr) =>  {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Info) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Info) ) } else{ None }; } }
@@ -49,7 +55,7 @@ macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = if 
 macro_rules! print_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
 
 #[derive(Debug)]
-pub enum MeasureTimeLogLevel {Info, Debug, Trace, Print}
+pub enum MeasureTimeLogLevel {Error, Warn, Info, Debug, Trace, Print}
 
 #[derive(Debug)]
 pub struct MeasureTime {
@@ -65,9 +71,11 @@ impl Drop for MeasureTime {
     fn drop(&mut self) {
         let time_in_ms = (self.start.elapsed().as_secs() as f64 * 1_000.0) + (self.start.elapsed().subsec_nanos() as f64 / 1000_000.0);
         match self.level  {
+            MeasureTimeLogLevel::Error =>   error!("{} took {}ms ",self.name, time_in_ms),
+            MeasureTimeLogLevel::Warn  =>    warn!("{} took {}ms ",self.name, time_in_ms),
             MeasureTimeLogLevel::Info  =>    info!("{} took {}ms ",self.name, time_in_ms),
             MeasureTimeLogLevel::Debug =>   debug!("{} took {}ms ",self.name, time_in_ms),
-            MeasureTimeLogLevel::Trace => trace!("{} took {}ms ",self.name, time_in_ms),
+            MeasureTimeLogLevel::Trace =>   trace!("{} took {}ms ",self.name, time_in_ms),
             MeasureTimeLogLevel::Print => println!("{} took {}ms ",self.name, time_in_ms),
         }
     }
