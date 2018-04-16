@@ -52,3 +52,6 @@ fn main() {
 
 #### Version 0.4
 Objects to measure time are only created when the log level is enabled, else ```None``` will be created
+
+#### Version 0.4.2
+Add error and warn levels
