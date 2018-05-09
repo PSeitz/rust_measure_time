@@ -55,3 +55,6 @@ Objects to measure time are only created when the log level is enabled, else ```
 
 #### Version 0.4.2
 Add error and warn levels
+
+#### Version 0.5.0
+change time formatting for improved readability
