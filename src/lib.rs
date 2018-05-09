@@ -70,13 +70,19 @@ impl MeasureTime {
 impl Drop for MeasureTime {
     fn drop(&mut self) {
         let time_in_ms = (self.start.elapsed().as_secs() as f64 * 1_000.0) + (self.start.elapsed().subsec_nanos() as f64 / 1000_000.0);
+
+        let time = match time_in_ms as u64 {
+            0..=3000 => format!("{}ms", time_in_ms),
+            3000..=60000 => format!("{:.2}s", time_in_ms/1000.0),
+            _ => format!("{:.2}m", time_in_ms/1000.0/60.0),
+        };
         match self.level  {
-            MeasureTimeLogLevel::Error =>   error!("{} took {}ms ",self.name, time_in_ms),
-            MeasureTimeLogLevel::Warn  =>    warn!("{} took {}ms ",self.name, time_in_ms),
-            MeasureTimeLogLevel::Info  =>    info!("{} took {}ms ",self.name, time_in_ms),
-            MeasureTimeLogLevel::Debug =>   debug!("{} took {}ms ",self.name, time_in_ms),
-            MeasureTimeLogLevel::Trace =>   trace!("{} took {}ms ",self.name, time_in_ms),
-            MeasureTimeLogLevel::Print => println!("{} took {}ms ",self.name, time_in_ms),
+            MeasureTimeLogLevel::Error =>   error!("{} took {}",self.name, time),
+            MeasureTimeLogLevel::Warn  =>    warn!("{} took {}",self.name, time),
+            MeasureTimeLogLevel::Info  =>    info!("{} took {}",self.name, time),
+            MeasureTimeLogLevel::Debug =>   debug!("{} took {}",self.name, time),
+            MeasureTimeLogLevel::Trace =>   trace!("{} took {}",self.name, time),
+            MeasureTimeLogLevel::Print => println!("{} took {}",self.name, time),
         }
     }
 }
