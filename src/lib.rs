@@ -1,70 +1,130 @@
 //! The crate provides macros, which measure the time in ms until end of scope
 //!
 //! This is done by creating an object, which measures the time. The time is printed when the object is dropped.
-//!
-//! *log verson = "0.4"  is required*
-//!
-//! Currently macro re-export is not supported in rust, so the user needs to ```macro_use``` import the log module like in the example below:
-//!
+//! 
+//! The logging behaviour is the same as other log macros like info!(..)
 //!
 //! ### Examples
 //!
 //! ```rust
 //! #[macro_use]
-//! extern crate log;
-//! #[macro_use]
 //! extern crate measure_time;
 //! fn main() {
 //!     info_time!("measure function");
 //!     {
-//!         debug_time!(format!("{:?}", "measuring block"));
+//!         debug_time!("{:?}", "measuring block");
 //!         let mut sum = 0;
 //!         for el in 0..50000 {
 //!             sum+=el;
 //!         }
 //!         println!("{:?}", sum);
-//!         // --> prints "measuring block took 0.010ms"
 //!     }
-//!     trace_time!(format!("{:?}", "yep"));
+//!     trace_time!("{:?}", "trace");
+//!     print_time!("print");
+//!     error_time!(target: "measure_time", "custom target");
 //!     // --> prints "yep took ...", "measuring function took 0.0135ms"
 //! }
 //! ```
 //!
-
-
 #[macro_use]
 pub extern crate log;
+pub use log::*;
+
+#[macro_export]
+macro_rules! log_time {
+    (target: $target:expr, $lvl:expr, $lvl2:expr, $($arg:tt)+) => (
+        #[allow(unused_variables)] 
+        let time = if log_enabled!($lvl) {
+            Some($crate::MeasureTime::new($target, module_path!(), file!(), line!(), format!($($arg)+), $lvl2) ) 
+        } else{
+            None 
+        };
+    );
+}
 
 /// logs the time with the error! macro
 #[macro_export]
-macro_rules! error_time {($e:expr) => {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Error) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Error) ) } else{ None }; } }
+macro_rules! error_time {
+    (target: $target:expr, $($arg:tt)+) => (
+        log_time!(target: $target, $crate::Level::Error, $crate::LevelFilter::Error, $($arg)+)
+    );
+    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Error, $crate::LevelFilter::Error, $($arg)+) )
+}
 /// logs the time with the warn! macro
 #[macro_export]
-macro_rules! warn_time {($e:expr) =>  {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Warn) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Warn) ) } else{ None }; } }
+macro_rules! warn_time {
+    (target: $target:expr, $($arg:tt)+) => (
+        log_time!(target: $target, $crate::Level::Warn, $crate::LevelFilter::Warn, $($arg)+)
+    );
+    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Warn, $crate::LevelFilter::Warn, $($arg)+) )
+}
 /// logs the time with the info! macro
 #[macro_export]
-macro_rules! info_time {($e:expr) =>  {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Info) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Info) ) } else{ None }; } }
+macro_rules! info_time {
+    (target: $target:expr, $($arg:tt)+) => (
+        log_time!(target: $target, $crate::Level::Info, $crate::LevelFilter::Info, $($arg)+)
+    );
+    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Info, $crate::LevelFilter::Info, $($arg)+) )
+}
 /// logs the time with the debug! macro
 #[macro_export]
-macro_rules! debug_time {($e:expr) => {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Debug) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Debug) ) }else{ None }; } }
+macro_rules! debug_time {
+    (target: $target:expr, $($arg:tt)+) => (
+        log_time!(target: $target, $crate::Level::Debug, $crate::LevelFilter::Debug, $($arg)+)
+    );
+    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Debug, $crate::LevelFilter::Debug, $($arg)+) )
+}
 /// logs the time with the trace! macro
 #[macro_export]
-macro_rules! trace_time {($e:expr) => {#[allow(unused_variables)] let time = if log_enabled!($crate::log::Level::Trace) { Some($crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Trace) ) } else{ None }; } }
+macro_rules! trace_time {
+    (target: $target:expr, $($arg:tt)+) => (
+        log_time!(target: $target, $crate::Level::Trace, $crate::LevelFilter::Trace, $($arg)+)
+    );
+    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Trace, $crate::LevelFilter::Trace, $($arg)+) )
+}
 /// logs the time with the print! macro
 #[macro_export]
-macro_rules! print_time {($e:expr) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new($e, $crate::MeasureTimeLogLevel::Print); } }
+macro_rules! print_time {($($arg:tt)+) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new(module_path!(), module_path!(), file!(), line!(), format!($($arg)+), $crate::LevelFilter::Off); } }
 
-#[derive(Debug)]
-pub enum MeasureTimeLogLevel {Error, Warn, Info, Debug, Trace, Print}
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn funcy_func() {
+        trace_time!("{:?}", "trace");
+        debug_time!("{:?}", "debug");
+        info_time!("measure function");
+        {
+            debug_time!("{:?}", "measuring block");
+            let mut sum = 0;
+            for el in 0..50000 {
+                sum+=el;
+            }
+            println!("{:?}", sum);
+        }
+
+        print_time!("print");
+        error_time!("error_time");
+
+        trace_time!(target: "trace_time", "custom target");
+        debug_time!(target: "debug_time", "custom target");
+        info_time!(target: "info_time", "custom target");
+        error_time!(target: "measure_time", "custom target");
+    }
+}
+
 
 #[derive(Debug)]
 pub struct MeasureTime {
     name: String,
+    target: &'static str,
+    module_path: &'static str,
+    file: &'static str,
+    line: u32,
     start: std::time::Instant,
-    level: MeasureTimeLogLevel
+    level: log::LevelFilter
 }
 impl MeasureTime {
-    pub fn new<S: Into<String>>(name: S, level:MeasureTimeLogLevel) -> Self {MeasureTime{name:name.into(), start: std::time::Instant::now(), level:level} }
+    pub fn new<S: Into<String>>(target: &'static str, module_path: &'static str, file: &'static str, line: u32, name: S, level:log::LevelFilter) -> Self {MeasureTime{target, module_path, file, line, name:name.into(), start: std::time::Instant::now(), level:level} }
 }
 
 impl Drop for MeasureTime {
@@ -76,32 +136,22 @@ impl Drop for MeasureTime {
             3000..=60000 => format!("{:.2}s", time_in_ms/1000.0),
             _ => format!("{:.2}m", time_in_ms/1000.0/60.0),
         };
-        match self.level  {
-            MeasureTimeLogLevel::Error =>   error!("{} took {}",self.name, time),
-            MeasureTimeLogLevel::Warn  =>    warn!("{} took {}",self.name, time),
-            MeasureTimeLogLevel::Info  =>    info!("{} took {}",self.name, time),
-            MeasureTimeLogLevel::Debug =>   debug!("{} took {}",self.name, time),
-            MeasureTimeLogLevel::Trace =>   trace!("{} took {}",self.name, time),
-            MeasureTimeLogLevel::Print => println!("{} took {}",self.name, time),
+
+        if let Some(level) = self.level.to_level() {
+            log::logger().log(
+                &log::Record::builder()
+                    .args(format_args!("{} took {}", self.name, time))
+                    .level(level)
+                    .target(self.target)
+                    .module_path(Some(self.module_path))
+                    .file(Some(self.file))
+                    .line(Some(self.line))
+                    .build(),
+            );
+        }else{
+            println!("{} took {}", self.name, time);
         }
+
     }
 }
 
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn funcy_func() {
-        info_time!("measure function");
-        {
-            debug_time!(format!("{:?}", "measuring block"));
-            let mut sum = 0;
-            for el in 0..50000 {
-                sum+=el;
-            }
-            println!("{:?}", sum);
-        }
-        trace_time!(format!("{:?}", "yep"));
-        print_time!("yep2");
-    }
-}

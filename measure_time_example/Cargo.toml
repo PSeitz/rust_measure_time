@@ -1,0 +1,9 @@
+[package]
+name = "measure_time_example"
+version = "0.1.0"
+authors = ["Pascal Seitz <pascal.seitz@gmail.com>"]
+
+[dependencies]
+log = "0.4"
+measure_time = { path = "../" }
+env_logger = "0.5.10"
