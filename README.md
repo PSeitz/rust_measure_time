@@ -14,22 +14,13 @@ Simply add a corresponding entry to your `Cargo.toml` dependency list:
 
 ```toml,ignore
 [dependencies]
-measure_time = "0.6"
+measure_time = "0.7"
 ```
-
-And add this to your crate root (e.g. lib.rs/main.rs):
-
-```rust,ignore
-#[macro_use]
-extern crate measure_time;
-```
-
 
 ### Examples
 
 ```rust
-#[macro_use]
-extern crate measure_time;
+use measure_time::{info_time, debug_time, trace_time, error_time, print_time};
 fn main() {
     info_time!("measure function");
     {
@@ -61,3 +52,6 @@ Change time formatting for improved readability
 Behaviour is now the same as other log macros (eg. info!). Reexporting log crate macros via pub use.
 Previously all tracing was made to the measure_time target (e.g. RUST_LOG=measure_time=debug). This is now fixed.
 Added a small example (https://github.com/PSeitz/rust_measure_time/tree/master/measure_time_example).
+
+#### Version 0.7.0
+Support 2018 imports, with improved macro import hygiene.

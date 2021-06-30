@@ -1,14 +1,13 @@
 //! The crate provides macros, which measure the time in ms until end of scope
 //!
 //! This is done by creating an object, which measures the time. The time is printed when the object is dropped.
-//! 
+//!
 //! The logging behaviour is the same as other log macros like info!(..)
 //!
 //! ### Examples
 //!
 //! ```rust
-//! #[macro_use]
-//! extern crate measure_time;
+//! use measure_time::{info_time, debug_time, trace_time, error_time, print_time};
 //! fn main() {
 //!     info_time!("measure function");
 //!     {
@@ -26,18 +25,17 @@
 //! }
 //! ```
 //!
-#[macro_use]
-pub extern crate log;
+extern crate log;
 pub use log::*;
 
 #[macro_export]
 macro_rules! log_time {
     (target: $target:expr, $lvl:expr, $lvl2:expr, $($arg:tt)+) => (
-        #[allow(unused_variables)] 
-        let time = if log_enabled!($lvl) {
-            Some($crate::MeasureTime::new($target, module_path!(), file!(), line!(), format!($($arg)+), $lvl2) ) 
+        #[allow(unused_variables)]
+        let time = if $crate::log_enabled!($lvl) {
+            Some($crate::MeasureTime::new($target, module_path!(), file!(), line!(), format!($($arg)+), $lvl2) )
         } else{
-            None 
+            None
         };
     );
 }
@@ -46,41 +44,41 @@ macro_rules! log_time {
 #[macro_export]
 macro_rules! error_time {
     (target: $target:expr, $($arg:tt)+) => (
-        log_time!(target: $target, $crate::Level::Error, $crate::LevelFilter::Error, $($arg)+)
+        $crate::log_time!(target: $target, $crate::Level::Error, $crate::LevelFilter::Error, $($arg)+)
     );
-    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Error, $crate::LevelFilter::Error, $($arg)+) )
+    ($($arg:tt)+) => ($crate::log_time!(target: module_path!(), $crate::Level::Error, $crate::LevelFilter::Error, $($arg)+) )
 }
 /// logs the time with the warn! macro
 #[macro_export]
 macro_rules! warn_time {
     (target: $target:expr, $($arg:tt)+) => (
-        log_time!(target: $target, $crate::Level::Warn, $crate::LevelFilter::Warn, $($arg)+)
+        $crate::log_time!(target: $target, $crate::Level::Warn, $crate::LevelFilter::Warn, $($arg)+)
     );
-    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Warn, $crate::LevelFilter::Warn, $($arg)+) )
+    ($($arg:tt)+) => ($crate::log_time!(target: module_path!(), $crate::Level::Warn, $crate::LevelFilter::Warn, $($arg)+) )
 }
 /// logs the time with the info! macro
 #[macro_export]
 macro_rules! info_time {
     (target: $target:expr, $($arg:tt)+) => (
-        log_time!(target: $target, $crate::Level::Info, $crate::LevelFilter::Info, $($arg)+)
+        $crate::log_time!(target: $target, $crate::Level::Info, $crate::LevelFilter::Info, $($arg)+)
     );
-    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Info, $crate::LevelFilter::Info, $($arg)+) )
+    ($($arg:tt)+) => ($crate::log_time!(target: module_path!(), $crate::Level::Info, $crate::LevelFilter::Info, $($arg)+) )
 }
 /// logs the time with the debug! macro
 #[macro_export]
 macro_rules! debug_time {
     (target: $target:expr, $($arg:tt)+) => (
-        log_time!(target: $target, $crate::Level::Debug, $crate::LevelFilter::Debug, $($arg)+)
+        $crate::log_time!(target: $target, $crate::Level::Debug, $crate::LevelFilter::Debug, $($arg)+)
     );
-    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Debug, $crate::LevelFilter::Debug, $($arg)+) )
+    ($($arg:tt)+) => ($crate::log_time!(target: module_path!(), $crate::Level::Debug, $crate::LevelFilter::Debug, $($arg)+) )
 }
 /// logs the time with the trace! macro
 #[macro_export]
 macro_rules! trace_time {
     (target: $target:expr, $($arg:tt)+) => (
-        log_time!(target: $target, $crate::Level::Trace, $crate::LevelFilter::Trace, $($arg)+)
+        $crate::log_time!(target: $target, $crate::Level::Trace, $crate::LevelFilter::Trace, $($arg)+)
     );
-    ($($arg:tt)+) => (log_time!(target: module_path!(), $crate::Level::Trace, $crate::LevelFilter::Trace, $($arg)+) )
+    ($($arg:tt)+) => ($crate::log_time!(target: module_path!(), $crate::Level::Trace, $crate::LevelFilter::Trace, $($arg)+) )
 }
 /// logs the time with the print! macro
 #[macro_export]
@@ -97,7 +95,7 @@ mod tests {
             debug_time!("{:?}", "measuring block");
             let mut sum = 0;
             for el in 0..50000 {
-                sum+=el;
+                sum += el;
             }
             println!("{:?}", sum);
         }
@@ -112,7 +110,6 @@ mod tests {
     }
 }
 
-
 #[derive(Debug)]
 pub struct MeasureTime {
     name: String,
@@ -121,20 +118,38 @@ pub struct MeasureTime {
     file: &'static str,
     line: u32,
     start: std::time::Instant,
-    level: log::LevelFilter
+    level: log::LevelFilter,
 }
 impl MeasureTime {
-    pub fn new<S: Into<String>>(target: &'static str, module_path: &'static str, file: &'static str, line: u32, name: S, level:log::LevelFilter) -> Self {MeasureTime{target, module_path, file, line, name:name.into(), start: std::time::Instant::now(), level:level} }
+    pub fn new<S: Into<String>>(
+        target: &'static str,
+        module_path: &'static str,
+        file: &'static str,
+        line: u32,
+        name: S,
+        level: log::LevelFilter,
+    ) -> Self {
+        MeasureTime {
+            target,
+            module_path,
+            file,
+            line,
+            name: name.into(),
+            start: std::time::Instant::now(),
+            level,
+        }
+    }
 }
 
 impl Drop for MeasureTime {
     fn drop(&mut self) {
-        let time_in_ms = (self.start.elapsed().as_secs() as f64 * 1_000.0) + (self.start.elapsed().subsec_nanos() as f64 / 1000_000.0);
+        let time_in_ms = (self.start.elapsed().as_secs() as f64 * 1_000.0)
+            + (self.start.elapsed().subsec_nanos() as f64 / 1000_000.0);
 
         let time = match time_in_ms as u64 {
             0..=3000 => format!("{}ms", time_in_ms),
-            3000..=60000 => format!("{:.2}s", time_in_ms/1000.0),
-            _ => format!("{:.2}m", time_in_ms/1000.0/60.0),
+            3001..=60000 => format!("{:.2}s", time_in_ms / 1000.0),
+            _ => format!("{:.2}m", time_in_ms / 1000.0 / 60.0),
         };
 
         if let Some(level) = self.level.to_level() {
@@ -148,10 +163,8 @@ impl Drop for MeasureTime {
                     .line(Some(self.line))
                     .build(),
             );
-        }else{
+        } else {
             println!("{} took {}", self.name, time);
         }
-
     }
 }
-
