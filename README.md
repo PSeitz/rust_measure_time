@@ -14,7 +14,7 @@ Simply add a corresponding entry to your `Cargo.toml` dependency list:
 
 ```toml,ignore
 [dependencies]
-measure_time = "0.7"
+measure_time = "0.8"
 ```
 
 ### Examples
@@ -55,3 +55,7 @@ Added a small example (https://github.com/PSeitz/rust_measure_time/tree/master/m
 
 #### Version 0.7.0
 Support 2018 imports, with improved macro import hygiene.
+
+#### Version 0.8.0
+Fix human readable time, see https://github.com/PSeitz/rust_measure_time/commit/bd829342aaed87db84f49ee6f7f46749b8c8e2ca for details.
+
