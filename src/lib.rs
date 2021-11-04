@@ -8,25 +8,22 @@
 //!
 //! ```rust
 //! use measure_time::{info_time, debug_time, trace_time, error_time, print_time};
-//! fn main() {
-//!     info_time!("measure function");
-//!     {
-//!         debug_time!("{:?}", "measuring block");
-//!         let mut sum = 0;
-//!         for el in 0..50000 {
-//!             sum+=el;
-//!         }
-//!         println!("{:?}", sum);
+//! info_time!("measure function");
+//! {
+//!     debug_time!("{:?}", "measuring block");
+//!     let mut sum = 0;
+//!     for el in 0..50000 {
+//!         sum+=el;
 //!     }
-//!     trace_time!("{:?}", "trace");
-//!     print_time!("print");
-//!     error_time!(target: "measure_time", "custom target");
-//!     // --> prints "yep took ...", "measuring function took 0.0135ms"
+//!     println!("{:?}", sum);
 //! }
+//! trace_time!("{:?}", "trace");
+//! print_time!("print");
+//! error_time!(target: "measure_time", "custom target");
+//! // --> prints "yep took ...", "measuring function took 0.0135ms"
 //! ```
 //!
 extern crate log;
-use std::time::Duration;
 
 use formatted_duration::human_readable_time;
 pub use log::*;

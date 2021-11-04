@@ -38,7 +38,7 @@ fn item_ms(
         if *started {
             f.write_str(" ")?;
         }
-        write!(f, "{}{}", (duration.subsec_nanos() / 1_000_000), name)?;
+        write!(f, "{}{}", duration.subsec_millis(), name)?;
         *started = true;
         return Ok(());
     }
@@ -49,7 +49,7 @@ fn item_ms(
     write!(
         f,
         "{}{}",
-        (duration.subsec_nanos() / 1_000_0) as f32 / 100.,
+        (duration.subsec_nanos() / 10_000) as f32 / 100.,
         name
     )?;
     *started = true;
@@ -99,7 +99,7 @@ impl fmt::Display for FormattedDuration {
         let minutes = day_secs % 3600 / 60;
         let seconds = day_secs % 60;
 
-        let ref mut started = false;
+        let started = &mut false;
         item_plural(f, started, "year", years)?;
         item_plural(f, started, "month", months)?;
         item_plural(f, started, "day", days)?;
@@ -176,7 +176,7 @@ fn human_readable_time_test() {
     );
     assert_eq!(human_readable_time(Duration::new(0, 900_000)), "0.9ms");
     assert_eq!(human_readable_time(Duration::new(0, 950_000)), "0.95ms");
-    assert_eq!(human_readable_time(Duration::new(0, 1950_000)), "1.95ms");
-    assert_eq!(human_readable_time(Duration::new(0, 1950_000)), "1.95ms");
-    assert_eq!(human_readable_time(Duration::new(0, 1957_123)), "1.95ms");
+    assert_eq!(human_readable_time(Duration::new(0, 1_950_000)), "1.95ms");
+    assert_eq!(human_readable_time(Duration::new(0, 1_950_000)), "1.95ms");
+    assert_eq!(human_readable_time(Duration::new(0, 1_957_123)), "1.95ms");
 }
