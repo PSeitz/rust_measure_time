@@ -26,7 +26,12 @@
 //! ```
 //!
 extern crate log;
+use std::time::Duration;
+
+use formatted_duration::human_readable_time;
 pub use log::*;
+
+mod formatted_duration;
 
 #[macro_export]
 macro_rules! log_time {
@@ -84,32 +89,6 @@ macro_rules! trace_time {
 #[macro_export]
 macro_rules! print_time {($($arg:tt)+) => {#[allow(unused_variables)] let time = $crate::MeasureTime::new(module_path!(), module_path!(), file!(), line!(), format!($($arg)+), $crate::LevelFilter::Off); } }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn funcy_func() {
-        trace_time!("{:?}", "trace");
-        debug_time!("{:?}", "debug");
-        info_time!("measure function");
-        {
-            debug_time!("{:?}", "measuring block");
-            let mut sum = 0;
-            for el in 0..50000 {
-                sum += el;
-            }
-            println!("{:?}", sum);
-        }
-
-        print_time!("print");
-        error_time!("error_time");
-
-        trace_time!(target: "trace_time", "custom target");
-        debug_time!(target: "debug_time", "custom target");
-        info_time!(target: "info_time", "custom target");
-        error_time!(target: "measure_time", "custom target");
-    }
-}
-
 #[derive(Debug)]
 pub struct MeasureTime {
     name: String,
@@ -143,14 +122,8 @@ impl MeasureTime {
 
 impl Drop for MeasureTime {
     fn drop(&mut self) {
-        let time_in_ms = (self.start.elapsed().as_secs() as f64 * 1_000.0)
-            + (self.start.elapsed().subsec_nanos() as f64 / 1000_000.0);
-
-        let time = match time_in_ms as u64 {
-            0..=3000 => format!("{}ms", time_in_ms),
-            3001..=60000 => format!("{:.2}s", time_in_ms / 1000.0),
-            _ => format!("{:.2}m", time_in_ms / 1000.0 / 60.0),
-        };
+        let time = human_readable_time(self.start.elapsed());
+        //let time = human_readable_time(time_in_ms);
 
         if let Some(level) = self.level.to_level() {
             log::logger().log(
@@ -166,5 +139,34 @@ impl Drop for MeasureTime {
         } else {
             println!("{} took {}", self.name, time);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn funcy_func() {
+        trace_time!("{:?}", "trace");
+        debug_time!("{:?}", "debug");
+        info_time!("measure function");
+        {
+            debug_time!("{:?}", "measuring block");
+            let mut sum = 0;
+            for el in 0..50000 {
+                sum += el;
+            }
+            println!("{:?}", sum);
+        }
+
+        print_time!("print");
+        error_time!("error_time");
+
+        trace_time!(target: "trace_time", "custom target");
+        debug_time!(target: "debug_time", "custom target");
+        info_time!(target: "info_time", "custom target");
+        error_time!(target: "measure_time", "custom target");
     }
 }
