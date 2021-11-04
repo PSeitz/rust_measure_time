@@ -1,8 +1,10 @@
+[![Docs](https://docs.rs/measure_time/badge.svg)](https://docs.rs/crate/measure_time/)
+[![Crates.io](https://img.shields.io/crates/v/measure_time.svg)](https://crates.io/crates/measure_time)
+
+
 # measure_time
 
-[![](http://meritbadge.herokuapp.com/measure_time)](https://crates.io/crates/measure_time)
-
-The crate provides macros, which measure the time until end of scope.
+The crate provides macros, which measure the time until end of scope and print the elapsed time in a human readable format.
 
 This is done by creating an object, which measures the time. The time is printed when the object is dropped.
 
