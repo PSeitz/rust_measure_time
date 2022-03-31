@@ -14,3 +14,4 @@ categories = ["development-tools", "development-tools::profiling"]
 
 [dependencies]
 log = "0.4"
+instant = { version = "0.1", features = [ "stdweb" ] }

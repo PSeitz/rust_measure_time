@@ -93,7 +93,7 @@ pub struct MeasureTime {
     module_path: &'static str,
     file: &'static str,
     line: u32,
-    start: std::time::Instant,
+    start: instant::Instant,
     level: log::LevelFilter,
 }
 impl MeasureTime {
@@ -111,7 +111,7 @@ impl MeasureTime {
             file,
             line,
             name: name.into(),
-            start: std::time::Instant::now(),
+            start: instant::Instant::now(),
             level,
         }
     }
@@ -120,7 +120,6 @@ impl MeasureTime {
 impl Drop for MeasureTime {
     fn drop(&mut self) {
         let time = human_readable_time(self.start.elapsed());
-        //let time = human_readable_time(time_in_ms);
 
         if let Some(level) = self.level.to_level() {
             log::logger().log(

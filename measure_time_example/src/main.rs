@@ -10,8 +10,6 @@ fn main() {
 
     use std::{thread, time};
 
-    let one_sec = time::Duration::from_millis(1000);
+    let one_sec = time::Duration::from_millis(1002);
     thread::sleep(one_sec);
-
 }
-
