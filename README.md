@@ -61,3 +61,7 @@ Support 2018 imports, with improved macro import hygiene.
 #### Version 0.8.0
 Fix human readable time, see https://github.com/PSeitz/rust_measure_time/commit/bd829342aaed87db84f49ee6f7f46749b8c8e2ca for details.
 
+#### Version 0.8.1
+Use wasm-compatible Instant https://github.com/PSeitz/rust_measure_time/issues/3
+
+
