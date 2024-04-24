@@ -6,7 +6,7 @@ readme = "README.md"
 repository = "https://github.com/PSeitz/rust_measure_time"
 homepage = "https://github.com/PSeitz/rust_measure_time"
 keywords = ["measure", "time", "elapsed", "wall", "humantime"]
-license = "Unlicense"
+license = "MIT"
 description = """
 Provices macros to measure the time until end of scope.
 """
