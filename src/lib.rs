@@ -25,6 +25,8 @@
 //!
 extern crate log;
 
+use std::time::Instant;
+
 use formatted_duration::human_readable_time;
 pub use log::*;
 
@@ -93,7 +95,7 @@ pub struct MeasureTime {
     module_path: &'static str,
     file: &'static str,
     line: u32,
-    start: instant::Instant,
+    start: Instant,
     level: log::LevelFilter,
 }
 impl MeasureTime {
@@ -111,7 +113,7 @@ impl MeasureTime {
             file,
             line,
             name: name.into(),
-            start: instant::Instant::now(),
+            start: Instant::now(),
             level,
         }
     }
