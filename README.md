@@ -64,4 +64,7 @@ Fix human readable time, see https://github.com/PSeitz/rust_measure_time/commit/
 #### Version 0.8.1
 Use wasm-compatible Instant https://github.com/PSeitz/rust_measure_time/issues/3
 
+#### Version 0.9
+Use std::Instant
+
 
